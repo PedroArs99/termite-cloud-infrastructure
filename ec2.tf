@@ -54,9 +54,15 @@ resource "aws_network_interface" "nic" {
   }
 }
 
+resource "aws_key_pair" "root" {
+  key_name = "termite-cloud-infrastructure-root-key"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDJawwzGWklAOyrVWO46zAXbA6V9lhGf6lS9Hz+6uDjYyuNNcPqIfBTj5mSEFDcpTtUDiYe5msaAA9k4rAmbQOh1MQB+E0R8SHbI/K5StXI1aI2JYSKMOJOLyaK2JlBKYe4dTH9rKr61h7KkcVI+HuIvnB92gtkoxDLDxGiWqv5BB/EQ1gEF4T0KkwYqxrdNdrXBRXvAgFm7Iripqs1+9u5Di02MNnkPyCyZefhHYakQZ/FT/pXOQP4lRevOi9z3/JZ8ULp6vub9jqXh/bmUVrUhqtsc4IjTs7Ezy8SHqg8ka0ikfhzuMqp9VHJpDhGv0HAVOuzNqAHBxDm2oBi7yu5c9oLP3kDQJvKBt347NGRxbrx3KPtS5Zox4A6qjGAZ2rb7saC49pTf2EyY8CrlaNUfOa9lddH+kComKonhv48/MJq6VXQtX+zJCVLamoCEfIlylTfRRdcZiuGXQD53hH8o5J8AT8hefd8DLzh4J/zU4EIFYJXqLelXuZ5t8drEUU= pedroars@MacBook-Pro-de-Pedro.local"
+}
+
 resource "aws_instance" "ec2" {
   ami           = "ami-087924c9e0410af37" # Amazon Linux 2 AMI (HVM) - Kernel 5.10, SSD Volume Type
   instance_type = "t4g.micro"
+  key_name = aws_key_pair.root.key_name
 
   network_interface {
     network_interface_id = aws_network_interface.nic.id
