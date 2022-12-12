@@ -17,7 +17,7 @@ resource "aws_subnet" "subnet" {
 }
 
 resource "aws_security_group" "allow_ssh" {
-  name        = "allow_ssb"
+  name        = "allow_ssh"
   description = "Allow SSH inbound traffic"
   vpc_id      = aws_vpc.vpc.id
 
@@ -27,7 +27,6 @@ resource "aws_security_group" "allow_ssh" {
     to_port          = 22
     protocol         = "tcp"
     cidr_blocks      = [aws_vpc.vpc.cidr_block]
-    ipv6_cidr_blocks = [aws_vpc.vpc.ipv6_cidr_block]
   }
 
   egress {
@@ -47,7 +46,7 @@ resource "aws_network_interface" "nic" {
   subnet_id   = aws_subnet.subnet.id
   private_ips = ["172.16.10.100"]
 
-  security_groups = [ "value" ]
+  security_groups = [ aws_security_group.allow_ssh.id ]
 
   tags = {
     Name = var.name
