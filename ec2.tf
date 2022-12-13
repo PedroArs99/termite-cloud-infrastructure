@@ -6,10 +6,38 @@ resource "aws_vpc" "vpc" {
   }
 }
 
+resource "aws_internet_gateway" "gw" {
+  vpc_id = aws_vpc.vpc.id
+
+  tags = {
+    Name = var.name
+  }
+}
+
+resource "aws_route_table" "main_rt" {
+  vpc_id = aws_vpc.vpc.id
+  
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.gw.id
+  }
+
+  tags = {
+    Name = var.name
+  }
+}
+
+resource "aws_route_table_association" "tch_rt_association" {
+  subnet_id      = aws_subnet.subnet.id
+  route_table_id = aws_route_table.main_rt.id
+}
+
 resource "aws_subnet" "subnet" {
   vpc_id            = aws_vpc.vpc.id
   cidr_block        = "172.16.10.0/24"
   availability_zone = "eu-central-1a"
+
+  
 
   tags = {
     Name = var.name
@@ -22,11 +50,11 @@ resource "aws_security_group" "allow_ssh" {
   vpc_id      = aws_vpc.vpc.id
 
   ingress {
-    description      = "SSH from VPC"
-    from_port        = 22
-    to_port          = 22
-    protocol         = "tcp"
-    cidr_blocks      = [aws_vpc.vpc.cidr_block]
+    description = "SSH from VPC"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -83,4 +111,9 @@ resource "aws_instance" "ec2" {
     Name = var.name
   }
 
+}
+
+resource "aws_eip" "ec2_eip" {
+  instance = aws_instance.ec2.id
+  vpc = true
 }
