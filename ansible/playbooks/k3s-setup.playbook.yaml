@@ -1,0 +1,12 @@
+- name: Set Up K3s Instance
+  hosts: all
+  tasks:
+    - name: Yum Update
+      yum:
+        update_only: yes
+    - name: Install CloudWatch Agent
+      yum:
+        name: amazon-cloudwatch-agent
+        state: latest
+      become: yes
+    
