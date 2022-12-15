@@ -1,6 +1,22 @@
 - name: Set Up K3s Instance
   hosts: all
   tasks:
+    - name: Create .aws Directory
+      file:
+        path: ~/.aws
+        state: directory
+        mode: '0755'
+
+    - name: Copy .aws config
+      copy:
+        src: ./.aws/config
+        dest: ~/.aws/config
+    
+    - name: Copy .aws credentials
+      copy:
+        src: ./.aws/credentials
+        dest: ~/.aws/credentials
+
     - name: Yum Update
       yum:
         update_only: yes
