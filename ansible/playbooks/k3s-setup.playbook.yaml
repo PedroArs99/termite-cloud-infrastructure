@@ -20,6 +20,11 @@
     - name: Yum Update
       yum:
         update_only: yes
+
+    - name: Install Collectd
+      command: amazon-linux-extras install collectd -y
+      become: yes
+
     - name: Install CloudWatch Agent
       yum:
         name: amazon-cloudwatch-agent
