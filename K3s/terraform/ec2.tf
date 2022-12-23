@@ -88,6 +88,7 @@ resource "aws_key_pair" "root" {
 
 resource "aws_instance" "ec2" {
   ami           = "ami-087924c9e0410af37" # Amazon Linux 2 AMI (HVM) - Kernel 5.10, SSD Volume Type
+  iam_instance_profile = aws_iam_instance_profile.cloud_watch_agent_profile.name
   instance_type = "t4g.micro"
   key_name = aws_key_pair.root.key_name
 
@@ -116,4 +117,9 @@ resource "aws_instance" "ec2" {
 resource "aws_eip" "ec2_eip" {
   instance = aws_instance.ec2.id
   vpc = true
+}
+
+resource "aws_iam_instance_profile" "cloud_watch_agent_profile" {
+  name = "CloudWatchAgentServer"
+  role = "CloudWatchAgentServerRole"
 }

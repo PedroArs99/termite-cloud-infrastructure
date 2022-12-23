@@ -1,21 +1,19 @@
 - name: Set Up K3s Instance
   hosts: all
+  vars:
+    - cloudwatch_config_location: /opt/aws/amazon-cloudwatch-agent/config.json
   tasks:
     - name: Create .aws Directory
       file:
         path: ~/.aws
         state: directory
         mode: '0755'
-
-    - name: Copy .aws config
-      copy:
-        src: ./.aws/config
-        dest: ~/.aws/config
     
-    - name: Copy .aws credentials
+    - name: Copy CloudWatch Agent config
       copy:
-        src: ./.aws/credentials
-        dest: ~/.aws/credentials
+        src: "./.aws/cloudwatch-agent-config.json"
+        dest: "{{ cloudwatch_config_location }}"
+      become: yes
 
     - name: Yum Update
       yum:
@@ -30,4 +28,7 @@
         name: amazon-cloudwatch-agent
         state: latest
       become: yes
+    
+    - name: Start CloudWatch Agent
+      command: "sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:{{ cloudwatch_config_location }}"
     
