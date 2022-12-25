@@ -1,4 +1,4 @@
-- name: Set Up K3s Instance
+- name: Set Up CloudWatch on a EC2 Instance
   hosts: all
   vars:
     - cloudwatch_config_location: /opt/aws/amazon-cloudwatch-agent/config.json

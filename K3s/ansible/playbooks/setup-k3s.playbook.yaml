@@ -1,0 +1,14 @@
+- name: Set Up K3s on a EC2 Instance
+  hosts: all
+  tasks:
+    - name: Create k3s Directory
+      file:
+        path: ~/k3s
+        state: directory
+        mode: "0755"
+
+    - name: Download K3s install script
+      command: curl -sfL https://get.k3s.io --output ./k3s/install_k3s.sh
+
+    - name: Install K3s
+      command: sh ./k3s/install_k3s.sh
