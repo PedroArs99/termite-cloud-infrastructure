@@ -96,11 +96,63 @@ resource "aws_security_group" "allow_k3s" {
   }
 }
 
+resource "aws_security_group" "allow_http" {
+  name        = "allow_http"
+  description = "Allow HTTP inbound traffic"
+  vpc_id      = aws_vpc.vpc.id
+
+  ingress {
+    description = "HTTP from the internet"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    Name = "allow_http"
+  }
+}
+
+resource "aws_security_group" "allow_https" {
+  name        = "allow_https"
+  description = "Allow HTTPS inbound traffic"
+  vpc_id      = aws_vpc.vpc.id
+
+  ingress {
+    description = "HTTPS from the internet"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    Name = "allow_k3s"
+  }
+}
+
 resource "aws_network_interface" "nic" {
   subnet_id   = aws_subnet.subnet.id
   private_ips = ["172.16.10.100"]
 
-  security_groups = [aws_security_group.allow_ssh.id, aws_security_group.allow_k3s.id]
+  security_groups = [aws_security_group.allow_ssh.id, aws_security_group.allow_k3s.id, aws_security_group.allow_http.id, aws_security_group.allow_https.id]
 
   tags = {
     Name = var.name
