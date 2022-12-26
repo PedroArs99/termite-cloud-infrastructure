@@ -1,5 +1,8 @@
 ## Ansible
 credentials
 
+## K8s
+secrets.yaml
+
 ## Terraform
 .terraform
