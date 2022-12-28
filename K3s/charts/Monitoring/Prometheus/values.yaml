@@ -1,5 +1,11 @@
 server:
   ingress:
+    annotations: 
+      cert-manager.io/cluster-issuer: letsencrypt
     enabled: true
     hosts:
       - prometheus.termite.cloud
+    tls:
+    - secretName: prometheus-tls
+      hosts:
+        - prometheus.termite.cloud
