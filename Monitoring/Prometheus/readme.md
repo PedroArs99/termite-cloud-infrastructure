@@ -1,8 +1,3 @@
-## Create Prometheus Namespace
-```sh
-kubectl apply -f namespace.yaml
-```
-
 ## Install Prometheus Repo
 ```sh
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
