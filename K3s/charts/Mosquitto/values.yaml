@@ -1,0 +1,20 @@
+authentication:
+  passwordEntries: |- 
+    termite-cloud-home:$7$101$EFSPf2N+hpPMS7ir$pTNSRDb2glF3GHQZ2e0431KbYr/8jvGBY0TdewCChExZ84eZdLjTV7bTzhHi3RkuoXaNuc/pOkFjcue+svWF2g==
+
+
+image:
+  tag: latest
+  pullPolicy: Always
+
+ports:
+  mqtt:
+    port: 1883
+    nodePort: 31883
+    protocol: TCP
+  websocket:
+    port: 9090
+    protocol: TCP
+
+service:
+  type: NodePort
