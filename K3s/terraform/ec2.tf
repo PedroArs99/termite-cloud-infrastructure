@@ -45,8 +45,8 @@ resource "aws_subnet" "subnet" {
 }
 
 resource "aws_security_group" "allow_ssh" {
-  name        = "allow_ssh"
-  description = "Allow SSH inbound traffic"
+  name        = "K3s Node"
+  description = "Ports Needed to handle a K3s Node"
   vpc_id      = aws_vpc.vpc.id
 
   ingress {
@@ -57,104 +57,40 @@ resource "aws_security_group" "allow_ssh" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
-  tags = {
-    Name = "allow_ssh"
-  }
-}
-
-resource "aws_security_group" "allow_k3s" {
-  name        = "allow_k3s"
-  description = "Allow K3S inbound traffic"
-  vpc_id      = aws_vpc.vpc.id
-
   ingress {
-    description = "K3S from the internet"
+    description = "K3s API"
     from_port   = 6443
     to_port     = 6443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
+  ingress {
+    description = "K3s Tunnel"
+    from_port   = 8472
+    to_port     = 8472
+    protocol    = "udp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
-
-  tags = {
-    Name = "allow_k3s"
-  }
-}
-
-resource "aws_security_group" "allow_http" {
-  name        = "allow_http"
-  description = "Allow HTTP inbound traffic"
-  vpc_id      = aws_vpc.vpc.id
 
   ingress {
-    description = "HTTP from the internet"
+    description = "HTTP"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
-  tags = {
-    Name = "allow_http"
-  }
-}
-
-resource "aws_security_group" "allow_https" {
-  name        = "allow_https"
-  description = "Allow HTTPS inbound traffic"
-  vpc_id      = aws_vpc.vpc.id
-
   ingress {
-    description = "HTTPS from the internet"
+    description = "HTTPS"
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
-  tags = {
-    Name = "allow_k3s"
-  }
-}
-
-resource "aws_security_group" "allow_mqtt" {
-  name        = "allow_mqtt"
-  description = "Allow MQTT inbound traffic"
-  vpc_id      = aws_vpc.vpc.id
-
   ingress {
-    description = "MQTT from the internet"
+    description = "MQTT"
     from_port   = 31883
     to_port     = 31883
     protocol    = "tcp"
@@ -170,7 +106,7 @@ resource "aws_security_group" "allow_mqtt" {
   }
 
   tags = {
-    Name = "allow_mqtt"
+    Name = "K3s Node"
   }
 }
 
@@ -179,11 +115,7 @@ resource "aws_network_interface" "nic" {
   private_ips = ["172.16.10.100"]
 
   security_groups = [
-    aws_security_group.allow_ssh.id,
-    aws_security_group.allow_k3s.id,
-    aws_security_group.allow_http.id,
-    aws_security_group.allow_https.id,
-    aws_security_group.allow_mqtt.id
+    aws_security_group.allow_ssh.id
   ]
 
   tags = {
